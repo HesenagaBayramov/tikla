@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Görüşək? ☕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@500;700&display=swap&subset=latin-ext" rel="stylesheet">
+<style>
+:root{
+  --rose:#ff8fb1; --rose-deep:#e5527f; --peach:#ffd1c1; --lilac:#d9c7ff; --mint:#c9f2e3;
+  --ink:#5b2a3f; --ink-soft:#8a5c70;
+  --glass:rgba(255,255,255,.55); --glass-border:rgba(255,255,255,.8);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Nunito',system-ui,sans-serif; color:var(--ink);
+  background:linear-gradient(135deg,#ffe3ec,#ffd9e8 30%,#e8d9ff 65%,#d8f1ff);
+  background-size:300% 300%; animation:bg 16s ease-in-out infinite;
+  overflow-x:hidden; min-height:100vh; min-height:100dvh;
+}
+@keyframes bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* Floating particles */
+#particles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.p{position:absolute;bottom:-40px;opacity:0;animation:floatUp linear forwards;user-select:none}
+@keyframes floatUp{
+  0%{transform:translateY(0) translateX(0) rotate(0);opacity:0}
+  10%{opacity:var(--o)}
+  50%{transform:translateY(-55vh) translateX(var(--dx)) rotate(25deg)}
+  100%{transform:translateY(-120vh) translateX(calc(var(--dx)*-1)) rotate(-20deg);opacity:0}
+}
+
+main{position:relative;z-index:1;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:20px}
+.screen{
+  grid-area:1/1; width:100%; max-width:520px; text-align:center;
+  background:var(--glass); border:1px solid var(--glass-border);
+  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  border-radius:32px; padding:34px 26px 30px;
+  box-shadow:0 20px 50px rgba(229,82,127,.18),0 4px 14px rgba(229,82,127,.1), inset 0 1px 0 rgba(255,255,255,.9);
+  opacity:0; visibility:hidden; transform:translateY(24px) scale(.97);
+  transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1), visibility 0s .6s;
+}
+.screen.active{opacity:1;visibility:visible;transform:none;transition:opacity .6s ease .15s, transform .6s cubic-bezier(.2,.8,.2,1) .15s, visibility 0s}
+.screen.leaving{transform:translateY(-24px) scale(.97)}
+.screen.active{animation:cardGlow 4s ease-in-out infinite .8s}
+@keyframes cardGlow{50%{box-shadow:0 26px 60px rgba(229,82,127,.28),0 4px 14px rgba(229,82,127,.1), inset 0 1px 0 rgba(255,255,255,.9)}}
+
+h1,h2{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.2}
+h1{font-size:clamp(1.7rem,6vw,2.3rem);margin:14px 0 8px}
+h2{font-size:clamp(1.5rem,5.5vw,2rem);margin-bottom:6px}
+.sub{color:var(--ink-soft);font-weight:500;margin-bottom:8px}
+
+/* Cup icon */
+.cup{position:relative;display:inline-block;font-size:5.2rem;line-height:1;animation:bob 3s ease-in-out infinite}
+.cup .steam{position:absolute;top:-18px;left:50%;font-size:1.6rem;opacity:0;animation:steam 2.6s ease-in infinite}
+.cup .steam:nth-child(2){margin-left:-26px;animation-delay:.9s}
+.cup .steam:nth-child(3){margin-left:14px;animation-delay:1.7s}
+@keyframes bob{50%{transform:translateY(-10px) rotate(3deg)}}
+@keyframes steam{0%{transform:translateY(10px) scale(.6);opacity:0}30%{opacity:.8}100%{transform:translateY(-40px) scale(1.1);opacity:0}}
+
+/* Question buttons */
+.btn-zone{position:relative;height:110px;display:flex;align-items:center;justify-content:center;gap:22px;margin-top:22px}
+button{font-family:inherit;cursor:pointer;border:none}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn{font-weight:700;font-size:1.1rem;border-radius:999px;padding:14px 34px;transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .4s}
+#yes{
+  background:linear-gradient(135deg,#ff7aa5,#ff9cc0);color:#fff;
+  box-shadow:0 10px 24px rgba(229,82,127,.45);
+  transform:scale(var(--ys,1)); z-index:5;
+  animation:pulse 1.8s ease-in-out infinite;position:relative;overflow:hidden;
+}
+#yes::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);
+  transform:skewX(-20deg);animation:shine 2.6s ease-in-out infinite}
+@keyframes shine{0%{left:-60%}60%,100%{left:130%}}
+@keyframes pulse{50%{box-shadow:0 12px 34px rgba(229,82,127,.7),0 0 0 8px rgba(255,143,177,.25)}}
+#no{background:rgba(255,255,255,.75);color:var(--ink-soft);box-shadow:0 6px 16px rgba(91,42,63,.12);transform:scale(var(--ns,1))}
+#yes.full{position:fixed;inset:0;border-radius:0;font-size:clamp(2rem,10vw,4rem);z-index:50;
+  transform:none;animation:none;display:flex;align-items:center;justify-content:center}
+.msg{min-height:2.4em;margin-top:10px;font-weight:700;color:var(--rose-deep);font-size:1.08rem}
+.msg.pop{animation:pop .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+
+/* Form */
+form{text-align:left;margin-top:18px;display:grid;gap:16px}
+label,.lbl{display:block;font-weight:700;font-size:.95rem;margin-bottom:6px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:420px){.row{grid-template-columns:1fr}}
+input[type=date],input[type=time],input[type=text],textarea{
+  width:100%;font:inherit;color:var(--ink);background:rgba(255,255,255,.7);
+  border:2px solid transparent;border-radius:16px;padding:12px 14px;
+  box-shadow:inset 0 2px 6px rgba(229,82,127,.08);transition:border-color .25s,box-shadow .25s,background .25s}
+input:focus,textarea:focus{outline:none;border-color:var(--rose);background:#fff;box-shadow:0 0 0 4px rgba(255,143,177,.25)}
+textarea{resize:vertical;min-height:84px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:rgba(255,255,255,.7);border:2px solid transparent;border-radius:999px;padding:10px 16px;
+  font-weight:700;font-size:.95rem;color:var(--ink);box-shadow:0 4px 10px rgba(91,42,63,.08);
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .25s,border-color .25s,color .25s}
+.chip:hover{transform:translateY(-2px)}
+.chip[aria-pressed=true]{background:linear-gradient(135deg,#ff7aa5,#ff9cc0);color:#fff;border-color:#fff;transform:scale(1.05)}
+.submit{width:100%;margin-top:4px;background:linear-gradient(135deg,#ff7aa5,#b79bff);color:#fff;
+  font-size:1.1rem;font-weight:700;padding:15px;border-radius:999px;box-shadow:0 12px 26px rgba(183,155,255,.5);
+  transition:transform .25s,box-shadow .25s,opacity .25s}
+.submit:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(183,155,255,.6)}
+.submit:disabled{opacity:.7;cursor:wait;transform:none}
+.err{color:#c0305f;font-weight:700;font-size:.92rem;min-height:1.3em;text-align:center}
+
+/* Thanks */
+.big{font-size:4.2rem;animation:bob 2.4s ease-in-out infinite;display:inline-block}
+.summary{margin:18px auto 0;background:rgba(255,255,255,.65);border-radius:20px;padding:14px 18px;text-align:left;font-weight:600;font-size:.95rem;line-height:1.7}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:100}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="particles" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<main>
+  <!-- 1. Sual -->
+  <section class="screen active" id="s1">
+    <div class="cup" aria-hidden="true">☕<span class="steam">✨</span><span class="steam">💗</span><span class="steam">✨</span></div>
+    <h1>Bəs mənimlə görüşərsən? ☕</h1>
+    <p class="sub">Səni yaxından tanımaq istəyirəm. Üz-üzə söhbət həm daha səmimi, həm daha əyləncəli olar deyə düşünürəm. Bir qəhvə içək? 😊</p>
+    <div class="btn-zone">
+      <button class="btn" id="yes" type="button">Hə ⭐</button>
+      <button class="btn" id="no" type="button">Yox</button>
+    </div>
+    <p class="msg" id="msg" aria-live="polite"></p>
+  </section>
+
+  <!-- 2. Form -->
+  <section class="screen" id="s2">
+    <h2>Yaşasın! 🎉</h2>
+    <p class="sub">Gəl, görüşü birlikdə planlayaq.</p>
+    <form id="form" action="https://formspree.io/f/mrperpzj" method="POST" novalidate>
+      <div class="row">
+        <div><label for="date">📅 Uyğun olduğun gün</label><input type="date" id="date" name="Gun" required></div>
+        <div><label for="time">🕒 Uyğun olduğun saat</label><input type="time" id="time" name="Saat" required></div>
+      </div>
+      <div>
+        <span class="lbl" id="planLbl">Necə bir plan edək?</span>
+        <div class="chips" role="group" aria-labelledby="planLbl" id="chips">
+          <button type="button" class="chip" aria-pressed="false" data-v="Qəhvə & Şirniyyat">☕ Qəhvə &amp; Şirniyyat</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Kino">🎬 Kino</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Parkda Gəzinti">🚶‍♂️ Parkda Gəzinti</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Dadlı nələrsə yemək">🍕 Dadlı nələrsə yemək</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Dəniz kənarında gəzinti">🌊 Dəniz kənarı</button>
+          <button type="button" class="chip" aria-pressed="false" data-v="Sürpriz!">🎁 Sürpriz olsun</button>
+        </div>
+      </div>
+      <div>
+        <label for="place">📍 Harada ilk görüşək?</label>
+        <input type="text" id="place" name="Gorus_yeri" placeholder="Məsələn: şəhər mərkəzində sakit bir kafe" required>
+        <div class="chips" id="placeChips" style="margin-top:10px">
+          <button type="button" class="chip" data-p="Şəhər mərkəzində bir kafe">🏙️ Mərkəzdə kafe</button>
+          <button type="button" class="chip" data-p="Dəniz kənarı / bulvar">🌊 Bulvar</button>
+          <button type="button" class="chip" data-p="Sakit, rahat bir yer">🌳 Sakit yer</button>
+          <button type="button" class="chip" data-p="Sən seç, mən razıyam">🤷 Sən seç</button>
+        </div>
+      </div>
+      <div><label for="note">💌 Əlavə qeyd</label>
+        <textarea id="note" name="Qeyd" placeholder="Xüsusi bir istəyin var?..."></textarea></div>
+      <input type="hidden" name="Plan" id="plan">
+      <input type="hidden" name="Xulase" id="xulase">
+      <input type="hidden" name="_subject" value="💌 Görüş təklifinə cavab gəldi!">
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none">
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn submit" id="send" type="submit">Təsdiqlə və Göndər ✨</button>
+    </form>
+  </section>
+
+  <!-- 3. Təşəkkür -->
+  <section class="screen" id="s3">
+    <div class="big" aria-hidden="true">💌</div>
+    <h2>Əla! Səninlə yaxından tanış olmaq üçün səbirsizlənirəm ✨</h2>
+    <p class="sub">Məlumatlar mənə çatdı. Tezliklə yazacağam 💗</p>
+    <p class="sub" id="count" style="margin-top:14px;font-weight:700"></p>
+    <div class="summary" id="summary"></div>
+  </section>
+</main>
+
+<script>
+/* ============ AYARLAR ============ */
+// Formspree ID (artıq yazılıb).
+const FORMSPREE_ID = "mrperpzj";
+/* ================================= */
+
+const $ = s => document.querySelector(s);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---- Üzən ürəklər / ulduzlar ---- */
+const icons = ['💗','💖','✨','⭐','🩷','💕','🌸','🤍'];
+function spawn(){
+  const el = document.createElement('span');
+  el.className = 'p';
+  el.textContent = icons[Math.floor(Math.random()*icons.length)];
+  const dur = 9 + Math.random()*9;
+  el.style.left = Math.random()*100 + 'vw';
+  el.style.fontSize = (12 + Math.random()*22) + 'px';
+  el.style.setProperty('--o', (.25 + Math.random()*.3).toFixed(2));
+  el.style.setProperty('--dx', (Math.random()*80 - 40) + 'px');
+  el.style.animationDuration = dur + 's';
+  $('#particles').appendChild(el);
+  setTimeout(() => el.remove(), dur*1000);
+}
+if(!reduce){ for(let i=0;i<10;i++) setTimeout(spawn, i*350); setInterval(spawn, 900); }
+
+/* ---- Ekranlar arası keçid ---- */
+function go(from, to){
+  const a = $(from), b = $(to);
+  a.classList.add('leaving'); a.classList.remove('active');
+  setTimeout(() => { a.classList.remove('leaving'); b.classList.add('active'); }, 350);
+}
+
+/* ---- "Yox" məntiqi ---- */
+const msgs = [
+  "Əminsən? 🥺",
+  "Bir də düşün... 🤔",
+  "Söz verirəm maraqlı olacaq! ✨",
+  "Hələ yaxşı tanımırsan məni 😉",
+  "Bir şans ver daa! 🙏",
+  "Onsuz da HƏ deyəcəksən! 😄"
+];
+let noCount = 0;
+const yes = $('#yes'), no = $('#no'), msg = $('#msg');
+
+no.addEventListener('click', () => {
+  noCount++;
+  const text = msgs[Math.min(noCount-1, msgs.length-1)];
+  msg.textContent = text; msg.classList.remove('pop'); void msg.offsetWidth; msg.classList.add('pop');
+  yes.style.setProperty('--ys', (1 + noCount*0.45).toFixed(2));
+  no.style.setProperty('--ns', Math.max(.3, 1 - noCount*0.12).toFixed(2));
+  if(noCount >= msgs.length + 1){          // son təkid: "Hə" bütün ekranı tutur
+    yes.classList.add('full'); yes.textContent = "HƏ de artıq! ⭐";
+  }
+});
+yes.addEventListener('click', () => {
+  yes.classList.remove('full');
+  burst(60);
+  go('#s1', '#s2');
+});
+
+/* ---- Forma ---- */
+const dateEl = $('#date');
+dateEl.min = new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().split('T')[0];
+const chosen = new Set();
+$('#chips').addEventListener('click', e => {
+  const c = e.target.closest('.chip'); if(!c) return;
+  const on = c.getAttribute('aria-pressed') !== 'true';
+  c.setAttribute('aria-pressed', on);
+  on ? chosen.add(c.dataset.v) : chosen.delete(c.dataset.v);
+});
+
+$('#placeChips').addEventListener('click', e => {
+  const c = e.target.closest('.chip'); if(!c) return;
+  $('#place').value = c.dataset.p;
+  document.querySelectorAll('#placeChips .chip').forEach(x => x.setAttribute('aria-pressed', x === c));
+});
+
+$('#form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#err'), btn = $('#send');
+  err.textContent = '';
+  if(!dateEl.value || !$('#time').value){ err.textContent = 'Zəhmət olmasa gün və saatı seç 🙏'; return; }
+  if(!chosen.size){ err.textContent = 'Ən azı bir plan seç 💗'; return; }
+  if(!$('#place').value.trim()){ err.textContent = 'Harada görüşəcəyimizi yaz və ya seç 📍'; return; }
+  $('#plan').value = [...chosen].join(', ');
+  $('#xulase').value = '📍 Yer: ' + $('#place').value.trim() + ' | 📅 Gün: ' + dateEl.value + ' | 🕒 Saat: ' + $('#time').value +
+    ' | 🎯 Plan: ' + [...chosen].join(', ') +
+    ($('#note').value.trim() ? ' | 💌 Qeyd: ' + $('#note').value.trim() : '');
+
+  btn.disabled = true; btn.textContent = 'Göndərilir... 💌';
+  const fd = new FormData(e.target);
+  const configured = true;
+  try{
+    if(configured){
+      const url = "https://formspree.io/f/" + FORMSPREE_ID;
+      const r = await fetch(url, {method:'POST', body:fd, headers:{'Accept':'application/json'}});
+      if(!r.ok){
+        let d = ''; try{ const j = await r.json(); d = (j.errors && j.errors.map(x=>x.message).join('; ')) || j.error || ''; }catch(_){}
+        throw new Error(r.status + (d ? ' - ' + d : ''));
+      }
+    }else{
+      console.warn('Formspree ID yazılmayıb — demo rejimi: məlumat göndərilmədi.', Object.fromEntries(fd));
+    }
+    $('#summary').innerHTML =
+      '📅 ' + dateEl.value + ' &nbsp;🕒 ' + $('#time').value +
+      '<br>📍 ' + $('#place').value.trim().replace(/</g,'&lt;') + '<br>🎯 ' + [...chosen].join(', ').replace(/</g,'&lt;') +
+      ($('#note').value.trim() ? '<br>💌 ' + $('#note').value.trim().replace(/</g,'&lt;') : '');
+    const nm = '';
+    const days = Math.ceil((new Date(dateEl.value + 'T00:00') - new Date().setHours(0,0,0,0)) / 864e5);
+    $('#count').textContent = (nm ? nm + ', ' : '') + (days > 0 ? 'görüşə ' + days + ' gün qalıb 🗓️' : 'bu gün görüşürük! 🎉');
+    go('#s2', '#s3');
+    setTimeout(() => { burst(220); setTimeout(()=>burst(120), 700); }, 500);
+  }catch(ex){
+    console.error(ex);
+    err.textContent = 'Göndərmək alınmadı 😢 (' + ex.message + ') İnternetini yoxla və yenidən cəhd et.';
+    btn.disabled = false; btn.textContent = 'Təsdiqlə və Göndər ✨';
+  }
+});
+
+/* ---- Konfetti (kitabxanasız) ---- */
+const cv = $('#confetti'), ctx = cv.getContext('2d');
+let parts = [], running = false;
+function size(){ cv.width = innerWidth; cv.height = innerHeight; }
+addEventListener('resize', size); size();
+const cols = ['#ff7aa5','#ffd166','#b79bff','#7fd8be','#ff9cc0','#8ecbff','#ffffff'];
+function burst(n){
+  if(reduce) n = Math.min(n, 30);
+  for(let i=0;i<n;i++){
+    const ang = Math.random()*Math.PI*2, sp = 5 + Math.random()*11;
+    parts.push({x:innerWidth/2, y:innerHeight*.45, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp - 6,
+      w:6+Math.random()*7, h:4+Math.random()*6, r:Math.random()*6, vr:(Math.random()-.5)*.4,
+      c:cols[Math.floor(Math.random()*cols.length)], life:0, heart:Math.random()<.2});
+  }
+  if(!running){ running = true; requestAnimationFrame(tick); }
+}
+function tick(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  parts = parts.filter(p => p.life < 200 && p.y < cv.height + 30);
+  for(const p of parts){
+    p.life++; p.vx *= .985; p.vy += .28; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+    ctx.globalAlpha = Math.max(0, 1 - p.life/200);
+    ctx.fillStyle = p.c;
+    if(p.heart){ ctx.font = '16px serif'; ctx.fillText('💖',-8,8); } else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+    ctx.restore();
+  }
+  if(parts.length) requestAnimationFrame(tick); else { running = false; ctx.clearRect(0,0,cv.width,cv.height); }
+}
+</script>
+</body>
+</html>
